@@ -9,9 +9,9 @@ namespace koi2 {
     let _mqttDataEvt: Evtss = null
     // cached results
     let _className: string = ''
-    let _classTarget:string = ''
+    let _classTarget: string = ''
     let _classTargetMain: boolean = true
-    let _classSimilarity:number = 0
+    let _classSimilarity: number = 0
     let _faceAttrList: string[] = []
     let _posX: number = -1
     let _posY: number = -1
@@ -26,8 +26,8 @@ namespace koi2 {
 
     let _initState = false
 
-    function valReset(){
-        if (input.runningTime() - updateTime > 1000){
+    function valReset() {
+        if (input.runningTime() - updateTime > 1000) {
             _className = ''
             _classTarget = ''
             _classTargetMain = true
@@ -51,7 +51,7 @@ namespace koi2 {
         [SerialPin.P2, SerialPin.P13],
         [SerialPin.P14, SerialPin.P15],
     ]
-    
+
     export enum SerialPorts {
         //% block=port1
         Port1 = 0,
@@ -395,7 +395,7 @@ namespace koi2 {
     /**
      * custom model menu
      */
-    export enum CustomModelMenu{
+    export enum CustomModelMenu {
         //% block="ball"
         Ball = 0xa20000,
         //% block="pillar"
@@ -415,7 +415,7 @@ namespace koi2 {
 
     let modelCmd: number[] = [31, 81, 82, 83, 84, 85, 20, 86];
     function koi2UpdateData(): void {
-        control.inBackground(function() {
+        control.inBackground(function () {
             while (1) {
                 updateTime = input.runningTime()
                 let a = serial.readLine()
@@ -423,9 +423,9 @@ namespace koi2 {
                     a = trim(a)
                     let b = a.slice(1, a.length).split(' ')
                     let cmd = parseInt(b[0])
-                    if (cmd == 0){
+                    if (cmd == 0) {
                         _initState = true
-                    }else if (cmd == 42) { // feature extraction
+                    } else if (cmd == 42) { // feature extraction
                         try {
                             if (_classTarget == b[1] || _classTargetMain) {
                                 _className = b[1]
@@ -439,27 +439,49 @@ namespace koi2 {
 
                         }
                     } else if (cmd == 34) { // face attr
-                        _posX = parseInt(b[1])
-                        _posY = parseInt(b[2])
-                        _posW = parseInt(b[3])
-                        _posH = parseInt(b[4])
-                        _faceAttrList = b.slice(5)
+                        if (b.length > 1) {
+                            _posX = parseInt(b[1])
+                            _posY = parseInt(b[2])
+                            _posW = parseInt(b[3])
+                            _posH = parseInt(b[4])
+                            _faceAttrList = b.slice(5)
+                        } else {
+                            _posX = _posY = _posW = _posH = 0
+                            _faceAttrList = []
+                        }
                     } else if (cmd == 15) { // color blob tracking
-                        _posX = parseInt(b[1])
-                        _posY = parseInt(b[2])
-                        _posW = parseInt(b[3])
-                        _posH = parseInt(b[4])
+                        if (b.length > 1) {
+                            _posX = parseInt(b[1])
+                            _posY = parseInt(b[2])
+                            _posW = parseInt(b[3])
+                            _posH = parseInt(b[4])
+                        } else {
+                            _posX = _posY = _posW = _posH = 0
+                        }
                     } else if (cmd == 19) { // line follower color
-                        _lineX1 = parseInt(b[1])
-                        _lineY1 = parseInt(b[2])
-                        _lineX2 = parseInt(b[3])
-                        _lineY2 = parseInt(b[4])
+                        if (b.length > 1) {
+                            _lineX1 = parseInt(b[1])
+                            _lineY1 = parseInt(b[2])
+                            _lineX2 = parseInt(b[3])
+                            _lineY2 = parseInt(b[4])
+                        } else {
+
+                            _lineX1 = _lineY1 = _lineX2 = _lineY2 = 0
+                        }
                     } else if (modelCmd.indexOf(cmd) != -1) { // model cmd
-                        _posX = parseInt(b[1])
-                        _posY = parseInt(b[2])
-                        _posW = parseInt(b[3])
-                        _posH = parseInt(b[4])
-                        _className = b[5]
+                        if (b.length > 1) {
+                            _posX = parseInt(b[1])
+                            _posY = parseInt(b[2])
+                            _posW = parseInt(b[3])
+                            _posH = parseInt(b[4])
+                            _className = b[5]
+                        } else {
+                            _posX = _posY = _posW = _posH = 0
+                            _className = ""
+                            if (cmd == 83) {
+                                _className = "-1"
+                            }
+                        }
                     } else if (cmd == 3) { // btn
                         control.raiseEvent(_koiNewEventId, parseInt(b[1]))
                     } else if (cmd == 55) { // btn
@@ -475,7 +497,6 @@ namespace koi2 {
 
     /**
     * Set the function of koi2 running
-    * @param func Function; eg: NoneMode
     * @param iotSwitch switch; eg: OFF
     */
     //% blockId=koi2_switch_function block="switch function %func iot %iotSwitch"
@@ -486,7 +507,7 @@ namespace koi2 {
         serial.writeLine(`K97 ${func + iotSwitch}`)
         basic.pause(500)
         _initState = false
-        while (!_initState){
+        while (!_initState) {
             serial.writeLine("K0")
             basic.pause(1000)
         }
@@ -622,9 +643,9 @@ namespace koi2 {
     //% advanced=true
     export function displayFiles(location: Location, page: number): void {
         let addr = "/flash"
-        if(location){
+        if (location) {
             addr = "/sd"
-        }        
+        }
         serial.writeLine(`K8 ${addr} ${page}`)
     }
 
@@ -682,8 +703,8 @@ namespace koi2 {
      */
     //% blockId=koi2_audio_record block="record audio to /sd/%name sec %sec"
     //% weight=99 group="Basic"
-    export function audioRecord(name: string,sec :number): void {
-        serial.writeLine(`K61 ` + `/sd/` + name +` `+sec)
+    export function audioRecord(name: string, sec: number): void {
+        serial.writeLine(`K61 ` + `/sd/` + name + ` ` + sec)
     }
 
     /**
@@ -705,10 +726,10 @@ namespace koi2 {
      */
     //% blockId=koi2_image_display block="display img from %location %name sec %sec"
     //% weight=99 group="Basic"
-    export function imageDisplay(location: Location, name: string, sec:number): void {
-        serial.writeLine(`K1 ` + paths[location] + name + ` `+sec*1000)
+    export function imageDisplay(location: Location, name: string, sec: number): void {
+        serial.writeLine(`K1 ` + paths[location] + name + ` ` + sec * 1000)
     }
-    
+
     /**
      * Display text
      * @param text show text; eg: hello
@@ -720,7 +741,7 @@ namespace koi2 {
     //% blockId=koi2_text_display block="display text %text x: %x y: %y color: %color sec: %sec"
     //% weight=99 group="Basic"
     export function textDisplay(text: string, x: number, y: number, color: TextColor, sec: number): void {
-        serial.writeLine(`K4 ${x+40} ${y} ${sec*1000} ${colors[color]} ${text}`)
+        serial.writeLine(`K4 ${x + 40} ${y} ${sec * 1000} ${colors[color]} ${text}`)
     }
 
     /**
@@ -837,7 +858,7 @@ namespace koi2 {
     //% block="face tracking get %quantityType quantity"
     //% blockId=koi2_face_tracking_get_quantity
     //% weight=60 group="Face tracking"
-    export function faceTrackingGetQuantity(quantityType:FaceAttrQuantity): number {
+    export function faceTrackingGetQuantity(quantityType: FaceAttrQuantity): number {
         valReset()
         let quantity = _faceAttrList[quantityType]
         _faceAttrList[quantityType] = "-1"
@@ -958,7 +979,7 @@ namespace koi2 {
         valReset()
         let deviation = _classSimilarity
         deviation = Math.max(0, Math.min(deviation, 5));
-        let similarity = (5 - deviation)/5*100
+        let similarity = (5 - deviation) / 5 * 100
         return similarity
     }
 
@@ -969,8 +990,8 @@ namespace koi2 {
      */
     //% blockId=koi2_classify_image_save block="classify image save model to %location %path"
     //% group="Classifier" weight=35
-    export function classifyImageSave(location: Location,path: string): void {
-        let str = `K43 `+paths[location]+path
+    export function classifyImageSave(location: Location, path: string): void {
+        let str = `K43 ` + paths[location] + path
         serial.writeLine(str)
     }
 
@@ -1083,7 +1104,7 @@ namespace koi2 {
         valReset()
         return resultXYWH(res)
     }
-    
+
     /**
     * Set scanning type
     */
@@ -1124,10 +1145,10 @@ namespace koi2 {
     //% weight=99 group="Custom"
     export function customModelInitfromSD(modelAddr: string, anchor: number[]): void {
         let anchorStr = ""
-        for(let j=0;j<anchor.length;j++){
-            anchorStr +=anchor[j].toString()
-            if(j != anchor.length-1){
-                anchorStr+=","
+        for (let j = 0; j < anchor.length; j++) {
+            anchorStr += anchor[j].toString()
+            if (j != anchor.length - 1) {
+                anchorStr += ","
             }
         }
         serial.writeLine(`K87 1 ${modelAddr} ${anchorStr}`)
@@ -1158,9 +1179,9 @@ namespace koi2 {
     //% weight=99 group="Custom"
     export function customModelPreset(modelAddr: CustomModelMenu): void {
         let anchorStr22 = ""
-        if (modelAddr == 0xa20000){
+        if (modelAddr == 0xa20000) {
             anchorStr22 = "1.25,1.25,1.50,1.50,1.72,1.72,1.97,1.97,2.34,2.31"
-        } else if (modelAddr == 0xab0000){
+        } else if (modelAddr == 0xab0000) {
             anchorStr22 = "1.78,1.97,2.28,2.56,2.69,3.12,3.31,3.78,4.03,4.59"
         }
         serial.writeLine(`K87 0 ${modelAddr} ${anchorStr22}`)
