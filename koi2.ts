@@ -1265,18 +1265,17 @@ namespace koi2 {
 
     /**
      * Load custom classifier model from file
-     * @param location file location; eg: SD
      * @param modelPath model path; eg: custom_classifier.kmodel
      */
-    //% blockId=koi2_custom_classifier_load_from_file block="custom classifier load model from %location %modelPath"
+    //% blockId=koi2_custom_classifier_load_from_file block="custom classifier load model from sd card %modelPath"
     //% weight=99 group="Custom Classifier"
-    export function customClassifierLoadFromFile(location: Location, modelPath: string): void {
-        serial.writeLine(`K49 1 ${paths[location] + modelPath}`)
+    export function customClassifierLoadFromFile(modelPath: string): void {
+        serial.writeLine(`K49 1 /sd/${modelPath}`)
     }
 
     /**
      * Load custom classifier model from koi2 address
-     * @param modelAddr model address; eg: 0xa20000
+     * @param modelAddr model address; eg: 0x860000
      */
     //% blockId=koi2_custom_classifier_load_from_koi2 block="custom classifier load model from koi2 %modelAddr"
     //% weight=98 group="Custom Classifier"
