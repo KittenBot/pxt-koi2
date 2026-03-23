@@ -1,5 +1,5 @@
 //% color="#5c7cfa" weight=10 icon="\u03f0"
-//% groups='["Basic", "Face tracking", "Face Mask", "Color blob tracking", "Line follower","Classifier",  "Traffic sign", "Number recognition", "Letter recognition","Object tracking","Scan Code","Custom","WIFI"]'
+//% groups='["Basic", "Face tracking", "Face Mask", "Color blob tracking", "Line follower","Classifier",  "Traffic sign", "Number recognition", "Letter recognition","Object tracking","Scan Code","Custom","Custom Classifier","WIFI"]'
 //% block="koi2"
 
 namespace koi2 {
@@ -21,6 +21,8 @@ namespace koi2 {
     let _lineY1: number = -1
     let _lineX2: number = -1
     let _lineY2: number = -1
+    let _classifierIndex: number = -1
+    let _classifierConfidence: number = -1
 
     let updateTime = input.runningTime()
 
@@ -41,6 +43,8 @@ namespace koi2 {
             _lineY1 = -1
             _lineX2 = -1
             _lineY2 = -1
+            _classifierIndex = -1
+            _classifierConfidence = -1
         }
     }
 
@@ -153,6 +157,8 @@ namespace koi2 {
         LetterRecognition = 0x6,
         //% block="scan code"
         ScanCode = 0x100,
+        //% block="custom classifier"
+        CustomClassifier = 0x31,
     }
 
     export enum CvFunction {
@@ -187,6 +193,8 @@ namespace koi2 {
         LineFollower = 0x20,
         //% block="scan code"
         ScanCode = 0x100,
+        //% block="custom classifier"
+        CustomClassifier = 0x31,
     }
 
     export enum ColorNames {
@@ -484,6 +492,11 @@ namespace koi2 {
                         }
                     } else if (cmd == 3) { // btn
                         control.raiseEvent(_koiNewEventId, parseInt(b[1]))
+                    } else if (cmd == 50) { // custom classifier result: idx confidence
+                        if (b.length > 2) {
+                            _classifierIndex = parseInt(b[1])
+                            _classifierConfidence = parseFloat(b[2])
+                        }
                     } else if (cmd == 55) { // btn
                         if (_mqttDataEvt) {
                             _mqttDataEvt(b[1], b[2])
@@ -1211,6 +1224,52 @@ namespace koi2 {
             return -1
         }
         return parseInt(id)
+    }
+
+    /**
+     * Load custom classifier model from file
+     * @param location file location; eg: SD
+     * @param modelPath model path; eg: custom_classifier.kmodel
+     */
+    //% blockId=koi2_custom_classifier_load_from_file block="custom classifier load model from %location %modelPath"
+    //% weight=99 group="Custom Classifier"
+    export function customClassifierLoadFromFile(location: Location, modelPath: string): void {
+        serial.writeLine(`K49 1 ${paths[location] + modelPath}`)
+    }
+
+    /**
+     * Load custom classifier model from koi2 address
+     * @param modelAddr model address; eg: 0xa20000
+     */
+    //% blockId=koi2_custom_classifier_load_from_koi2 block="custom classifier load model from koi2 %modelAddr"
+    //% weight=98 group="Custom Classifier"
+    export function customClassifierLoadFromKoi2(modelAddr: number): void {
+        serial.writeLine(`K49 0 ${modelAddr}`)
+    }
+
+    /**
+     * Get custom classifier result id
+     */
+    //% blockId=koi2_custom_classifier_get_id block="custom classifier get id"
+    //% weight=60 group="Custom Classifier"
+    export function customClassifierGetId(): number {
+        valReset()
+        return _classifierIndex
+    }
+
+    /**
+     * Get custom classifier confidence in percentage
+     */
+    //% blockId=koi2_custom_classifier_get_confidence block="custom classifier get confidence"
+    //% weight=59 group="Custom Classifier"
+    export function customClassifierGetConfidence(): number {
+        valReset()
+        // K50 returns confidence as ratio or percentage depending on firmware.
+        // Normalize to 0~100 for blocks.
+        if (_classifierConfidence > 0 && _classifierConfidence <= 1) {
+            return Math.trunc(_classifierConfidence * 100)
+        }
+        return _classifierConfidence
     }
 
     /**
