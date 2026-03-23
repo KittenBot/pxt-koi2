@@ -50,6 +50,7 @@
     "koi2.customModelInitfromKoi2|block": "自定义目标检测 加载内部模型 %modelAddr 锚点值 %anchor",
     "koi2.customModelGetPosition|block": "自定义目标检测 获取位置信息 %res",
     "koi2.customModelGetId|block": "自定义目标检测 获取目标id",
+    "koi2.customModelGetConfidence|block": "自定义目标检测 获取目标置信度",
     "koi2.customModelPreset|block": "自定义目标检测 加载预置模型 %modelAddr",
     "koi2.customClassifierLoadFromFile|block": "预训练图像分类 从 %location 加载 %modelPath",
     "koi2.customClassifierLoadFromKoi2|block": "预训练图像分类 从 KOI Flash 加载 %modelAddr",

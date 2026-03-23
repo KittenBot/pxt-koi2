@@ -50,6 +50,7 @@
     "koi2.customModelInitfromKoi2|block": "自定義模型 從内部讀取 %modelAddr 錨點值 %anchor",
     "koi2.customModelGetPosition|block": "自定義模型 獲取位置信息 %res",
     "koi2.customModelGetId|block": "自定義模型 獲取目標ID",
+    "koi2.customModelGetConfidence|block": "自訂目標偵測 取得目標置信度",
     "koi2.customModelPreset|block": "自定義模型 加載預置模型 %modelAddr",
     "koi2.customClassifierLoadFromFile|block": "自定義分類 從 %location 載入模型 %modelPath",
     "koi2.customClassifierLoadFromKoi2|block": "自定義分類 從 KOI2 內部載入模型 %modelAddr",

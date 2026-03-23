@@ -23,6 +23,7 @@ namespace koi2 {
     let _lineY2: number = -1
     let _classifierIndex: number = -1
     let _classifierConfidence: number = -1
+    let _customObjectDetectionConfidence: number = -1
 
     let updateTime = input.runningTime()
 
@@ -45,6 +46,8 @@ namespace koi2 {
             _lineY2 = -1
             _classifierIndex = -1
             _classifierConfidence = -1
+            _customObjectDetectionConfidence = -1
+            
         }
     }
 
@@ -421,7 +424,7 @@ namespace koi2 {
         return n
     }
 
-    let modelCmd: number[] = [31, 81, 82, 83, 84, 85, 20, 86];
+    let modelCmd: number[] = [31, 81, 82, 83, 84, 85, 20];
     function koi2UpdateData(): void {
         control.inBackground(function () {
             while (1) {
@@ -500,6 +503,23 @@ namespace koi2 {
                     } else if (cmd == 55) { // btn
                         if (_mqttDataEvt) {
                             _mqttDataEvt(b[1], b[2])
+                        }
+                    } else if (cmd == 86) {
+                        if (b.length > 1) {
+                            _posX = parseInt(b[1])
+                            _posY = parseInt(b[2])
+                            _posW = parseInt(b[3])
+                            _posH = parseInt(b[4])
+                            _className = b[5]
+                            try{
+                                _customObjectDetectionConfidence = parseInt(b[6])
+                            } catch {
+                                _customObjectDetectionConfidence = -1
+                            }
+                        } else {
+                            _posX = _posY = _posW = _posH = 0
+                            _className = ""
+                            _customObjectDetectionConfidence = -1
                         }
                     }
                 }
@@ -1225,6 +1245,23 @@ namespace koi2 {
         }
         return parseInt(id)
     }
+
+    /**
+     * Return primary target confidence
+     */
+    //% block="custom model get confidence"
+    //% blockId=koi2_custom_model_get_confidence
+    //% weight=30 group="Custom"
+    export function customModelGetConfidence(): number {
+        valReset()
+        let id = _customObjectDetectionConfidence
+        if (id == -1) {
+            return -1
+        }
+        return id
+    }
+
+
 
     /**
      * Load custom classifier model from file
