@@ -154,5 +154,20 @@
     "koi2.displayFiles|block": "顯示 %location 文件列表,頁碼 %page",
     "koi2.closeDisplayFile|block": "關閉文件列表顯示",
     "koi2.removeFile|block": "刪除文件 %location %name",
-    "koi2.copyFile|block": "複製文件 %location1 %name1 到 %location2 %name2"
+    "koi2.copyFile|block": "複製文件 %location1 %name1 到 %location2 %name2",
+    "{id:group}Basic": "基礎",
+    "{id:group}Face tracking": "人臉偵測",
+    "{id:group}Face Mask": "口罩檢測",
+    "{id:group}Color blob tracking": "顏色追蹤",
+    "{id:group}Line follower": "巡線追蹤",
+    "{id:group}Classifier": "特徵分類",
+    "{id:group}Traffic sign": "交通卡識別",
+    "{id:group}Number recognition": "數位卡片識別",
+    "{id:group}Letter recognition": "字母卡片識別",
+    "{id:group}Object tracking": "通用物體辨識",
+    "{id:group}Scan Code": "掃碼",
+    "{id:group}Custom": "預訓練目標偵測",
+    "{id:group}Custom Classifier": "預訓練影像分類",
+    "{id:group}WIFI": "物聯網",
+    "{id:group}File operations": "文件操作"
 }
