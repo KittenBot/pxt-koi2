@@ -1177,6 +1177,21 @@ namespace koi2 {
     //% blockId=koi2_custom_model_init_sd block="from sd card load model %modelAddr anchor is %anchor"
     //% weight=99 group="Custom"
     export function customModelInitfromSD(modelAddr: string, anchor: number[]): void {
+        const trimmedAddr = modelAddr.trim();
+
+        const isStartWithSD = trimmedAddr.slice(0, 4) === '/sd/';
+
+        if (!isStartWithSD) {
+            if (trimmedAddr === '') {
+                modelAddr = '/sd/';
+            }
+            else if (trimmedAddr.slice(0, 1) === '/') {
+                modelAddr = `/sd${trimmedAddr}`;
+            }
+            else {
+                modelAddr = `/sd/${trimmedAddr}`;
+            }
+        }
         let anchorStr = ""
         for (let j = 0; j < anchor.length; j++) {
             anchorStr += anchor[j].toString()
@@ -1270,7 +1285,22 @@ namespace koi2 {
     //% blockId=koi2_custom_classifier_load_from_file block="custom classifier load model from sd card %modelPath"
     //% weight=99 group="Custom Classifier"
     export function customClassifierLoadFromFile(modelPath: string): void {
-        serial.writeLine(`K49 1 /sd/${modelPath}`)
+        const trimmedAddr = modelPath.trim();
+
+        const isStartWithSD = trimmedAddr.slice(0, 4) === '/sd/';
+
+        if (!isStartWithSD) {
+            if (trimmedAddr === '') {
+                modelPath = '/sd/';
+            }
+            else if (trimmedAddr.slice(0, 1) === '/') {
+                modelPath = `/sd${trimmedAddr}`;
+            }
+            else {
+                modelPath = `/sd/${trimmedAddr}`;
+            }
+        }
+        serial.writeLine(`K49 1 ${modelPath}`)
     }
 
     /**
