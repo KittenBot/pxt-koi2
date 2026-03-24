@@ -1174,8 +1174,8 @@ namespace koi2 {
      * Load custom model from sd card
      * @param modelAddr path; eg: custom_object.kmodel
      */
-    //% blockId=koi2_custom_model_init_sd block="from sd card load model %modelAddr anchor is %anchor"
-    //% weight=99 group="Custom"
+    //% blockId=koi2_custom_model_init_sd block="load custon object model from sdcard %modelAddr anchor %anchor"
+    //% weight=98 group="Custom"
     export function customModelInitfromSD(modelAddr: string, anchor: number[]): void {
         const trimmedAddr = modelAddr.trim();
 
@@ -1205,7 +1205,7 @@ namespace koi2 {
     /**
      * Load model from within koi
      */
-    //% blockId=koi2_custom_model_init_koi2 block="from koi2 load custom model anchor is %anchor"
+    //% blockId=koi2_custom_model_init_koi2 block="load custom object model from koi2 flash anchor %anchor"
     //% weight=99 group="Custom"
     export function customModelInitfromKoi2(anchor: number[]): void {
         let anchorStr2 = ""
@@ -1222,7 +1222,7 @@ namespace koi2 {
      * Set anchor point value
      * @param modelAddr path; eg: 0xab0000
      */
-    //% blockId=koi2_custom_model_preset block="from koi2 load pretrained model %modelAddr"
+    //% blockId=koi2_custom_model_preset block="load custom object model from koi2 %modelAddr"
     //% weight=99 group="Custom"
     export function customModelPreset(modelAddr: CustomModelMenu): void {
         let anchorStr22 = ""
@@ -1237,7 +1237,7 @@ namespace koi2 {
     /**
     * Returns the coordinates, length and width of the main target
     */
-    //% block="custom model get %res"
+    //% block="custom object model get %res"
     //% blockId=koi2_custom_model_get_position
     //% weight=60 group="Custom"
     export function customModelGetPosition(res: GetResult): number {
@@ -1248,7 +1248,7 @@ namespace koi2 {
     /**
      * Return primary target id
      */
-    //% block="custom model get id "
+    //% block="custom object model get id "
     //% blockId=koi2_custom_model_get_number
     //% weight=30 group="Custom"
     export function customModelGetId(): number {
@@ -1263,16 +1263,16 @@ namespace koi2 {
     /**
      * Return primary target confidence
      */
-    //% block="custom model get confidence"
+    //% block="custom object model get confidence(％)"
     //% blockId=koi2_custom_model_get_confidence
     //% weight=30 group="Custom"
     export function customModelGetConfidence(): number {
         valReset()
-        let id = _customObjectDetectionConfidence
-        if (id == -1) {
-            return -1
+        // Normalize to 0~100 for blocks.
+        if (_customObjectDetectionConfidence > 0 && _customObjectDetectionConfidence <= 1) {
+            return Math.trunc(_customObjectDetectionConfidence * 100)
         }
-        return id
+        return _customObjectDetectionConfidence
     }
 
 
@@ -1324,7 +1324,7 @@ namespace koi2 {
     /**
      * Get custom classifier confidence in percentage
      */
-    //% blockId=koi2_custom_classifier_get_confidence block="custom classifier get confidence"
+    //% blockId=koi2_custom_classifier_get_confidence block="custom classifier get confidence(％)"
     //% weight=59 group="Custom Classifier"
     export function customClassifierGetConfidence(): number {
         valReset()
