@@ -1,6 +1,6 @@
 {
     "name": "koi2",
-    "version": "0.2.13",
+    "version": "0.2.14",
     "description": "Extension for Kittenbot KOI2",
     "license": "MIT",
     "dependencies": {
