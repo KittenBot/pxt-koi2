@@ -1172,7 +1172,7 @@ namespace koi2 {
 
     /**
      * Load custom model from sd card
-     * @param modelAddr path; eg: /sd/ballRGB.kmodel
+     * @param modelAddr path; eg: custom_object.kmodel
      */
     //% blockId=koi2_custom_model_init_sd block="from sd card load model %modelAddr anchor is %anchor"
     //% weight=99 group="Custom"
@@ -1204,11 +1204,10 @@ namespace koi2 {
 
     /**
      * Load model from within koi
-     * @param modelAddr path; eg: 0xa20000
      */
-    //% blockId=koi2_custom_model_init_koi2 block="from koi2 load model %modelAddr anchor is %anchor"
+    //% blockId=koi2_custom_model_init_koi2 block="from koi2 load custom model anchor is %anchor"
     //% weight=99 group="Custom"
-    export function customModelInitfromKoi2(modelAddr: number, anchor: number[]): void {
+    export function customModelInitfromKoi2(anchor: number[]): void {
         let anchorStr2 = ""
         for (let k = 0; k < anchor.length; k++) {
             anchorStr2 += anchor[k].toString()
@@ -1216,7 +1215,7 @@ namespace koi2 {
                 anchorStr2 += ","
             }
         }
-        serial.writeLine(`K87 0 ${modelAddr} ${anchorStr2}`)
+        serial.writeLine(`K87 0 ${0x860000} ${anchorStr2}`)
     }
 
     /**
@@ -1305,12 +1304,11 @@ namespace koi2 {
 
     /**
      * Load custom classifier model from koi2 address
-     * @param modelAddr model address; eg: 0x860000
      */
-    //% blockId=koi2_custom_classifier_load_from_koi2 block="custom classifier load model from koi2 %modelAddr"
+    //% blockId=koi2_custom_classifier_load_from_koi2 block="custom classifier load custom model from koi2"
     //% weight=98 group="Custom Classifier"
-    export function customClassifierLoadFromKoi2(modelAddr: number): void {
-        serial.writeLine(`K49 0 ${modelAddr}`)
+    export function customClassifierLoadFromKoi2(): void {
+        serial.writeLine(`K49 0 ${0x860000}`)
     }
 
     /**
