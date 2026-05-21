@@ -1,6 +1,6 @@
 {
     "name": "koi2",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "description": "Extension for Kittenbot KOI2",
     "license": "MIT",
     "dependencies": {
@@ -17,7 +17,7 @@
     ],
     "public": true,
     "targetVersions": {
-        "target": "8.0.18",
+        "target": "8.0.22",
         "targetId": "microbit"
     },
     "supportedTargets": [

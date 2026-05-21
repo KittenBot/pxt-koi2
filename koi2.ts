@@ -1011,9 +1011,7 @@ namespace koi2 {
     export function classifyImageGetSimilarity(): number {
         valReset()
         let deviation = _classSimilarity
-        deviation = Math.max(0, Math.min(deviation, 5));
-        let similarity = (5 - deviation) / 5 * 100
-        return similarity
+        return deviation
     }
 
 
